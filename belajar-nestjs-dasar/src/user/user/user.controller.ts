@@ -3,6 +3,7 @@ import {
   Get,
   Header,
   HttpCode,
+  Inject,
   Param,
   Post,
   Query,
@@ -10,8 +11,19 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { UserService } from './user.service';
+import { Connection } from '../connection/connection';
+import { MailService } from '../mail/mail.service';
+import { UserRepository } from '../user-repository/user-repository';
 @Controller('/api/users')
 export class UserController {
+  constructor(
+    private service: UserService,
+    private connection: Connection,
+    private mailService: MailService,
+    @Inject('EmailService') private emailService: MailService,
+    private userRepository: UserRepository,
+  ) {}
   @Post()
   post(): string {
     return 'Hello World!';
@@ -29,7 +41,7 @@ export class UserController {
 
   @Get('/hello')
   sayHello(@Query('name') name: string): string {
-    return `Hello ${name}`;
+    return this.service.sayHello(name);
   }
 
   @Get('/sample-response')
@@ -64,5 +76,13 @@ export class UserController {
       title: 'template engine',
       name: name,
     });
+  }
+
+  @Get('/connection')
+  async getConnection(): Promise<string> {
+    this.userRepository.save();
+    this.mailService.send();
+    this.emailService.send();
+    return this.connection.getName();
   }
 }
