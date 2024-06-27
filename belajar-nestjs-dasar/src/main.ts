@@ -15,6 +15,7 @@ async function bootstrap() {
   app.set('views', __dirname + '/../views');
   app.set('view engine', 'html');
   app.engine('html', mustache());
+  app.enableShutdownHooks();
   const configService = app.get(ConfigService);
   app.useGlobalFilters(new ValidationFilter());
   await app.listen(configService.get('PORT'));
