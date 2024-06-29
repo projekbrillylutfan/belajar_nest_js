@@ -21,7 +21,7 @@ import {
 import { User } from '@prisma/client';
 import { Auth } from '../common/auth.decorator';
 
-@Controller('address')
+@Controller('/api/contacts/:contactId/addresses')
 export class AddressController {
   constructor(private addressService: AddressService) {}
 
